@@ -1,11 +1,18 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
+  <Grid />
 </template>
 
 <script>
 import io from "socket.io-client/dist/socket.io.js"
+import Grid from "./components/Grid.vue"
 
-let socket = io("http://localhost:3000");
+export default {
+  name: 'App',
+  setup() {
+    let socket = io("http://localhost:3000");
+  },
+  components: { Grid }
+}
 </script>
 
 <style>
