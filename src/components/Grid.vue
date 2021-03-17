@@ -34,7 +34,11 @@ export default {
   grid-template-rows: repeat(5, 64px);
   margin: 3px;
 }
+</style>
+<style>
 .tile {
+  width: 56px;
+  height: 56px;
   margin: 3px;
   border-radius: 3px;
   border: 1px solid #603c06;

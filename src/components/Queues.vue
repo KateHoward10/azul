@@ -35,13 +35,6 @@ export default {
   flex-direction: row;
   justify-content: flex-end;
 }
-.tile {
-  width: 56px;
-  height: 56px;
-  margin: 3px;
-  border-radius: 3px;
-  border: 1px solid #603c06;
-}
 .arrow {
   background-color: blue;
   width: 24px;

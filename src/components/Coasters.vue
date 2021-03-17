@@ -1,16 +1,21 @@
 <template>
   <div class="container">
     <div
-      v-for="(coaster, index) in Array(5)"
+      v-for="(coaster, index) in coasters"
       :key="index"
       class="coaster"
-    />
+    >
+      <div v-for="(tile, index) in coaster" :key="index" class="tile small" :class="tile" />
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Coasters'
+  name: 'Coasters',
+  props: {
+    coasters: Array
+  }
 }
 </script>
 
@@ -27,5 +32,13 @@ export default {
   border-radius: 50%;
   background-color: #603c06;
   margin: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+}
+.small {
+  width: 40px;
+  height: 40px;
 }
 </style>
