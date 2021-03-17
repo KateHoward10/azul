@@ -29,15 +29,15 @@ export default {
 <style scoped>
 .grid {
   display: grid;
-  width: 500px;
-  grid-template-columns: repeat(5, 100px);
-  grid-template-rows: repeat(5, 100px);
-  background-color: #ccc;
-  border: 5px solid #ccc;
+  width: 320px;
+  grid-template-columns: repeat(5, 64px);
+  grid-template-rows: repeat(5, 64px);
+  margin: 3px;
 }
 .tile {
-  margin: 5px;
-  border-radius: 5px;
+  margin: 3px;
+  border-radius: 3px;
+  border: 1px solid #603c06;
 }
 .blue {
   background-color: deepskyblue;
