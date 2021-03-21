@@ -40,5 +40,6 @@ export default {
 .small {
   width: 40px;
   height: 40px;
+  margin: 6px;
 }
 </style>

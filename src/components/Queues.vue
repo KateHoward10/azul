@@ -6,7 +6,7 @@
       class="row"
     >
       <div v-for="index in Array(queue).keys()" :key="index" class="tile" />
-      <div class="arrow">➔</div>
+      <div class="arrow" />
     </div>
   </div>
 </template>
