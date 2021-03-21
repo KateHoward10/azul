@@ -25,6 +25,7 @@ export default {
       const shuffled = colours.sort(() => Math.random() - 0.5);
       tiles.value = shuffled;
       coasters.value = [shuffled.slice(0, 4), shuffled.slice(4, 8), shuffled.slice(8, 12), shuffled.slice(12, 16), shuffled.slice(16, 20)];
+      socket.emit("newGame", coasters.value);
     }
 
     socket.on("gameStarted", data => {

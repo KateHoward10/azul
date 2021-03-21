@@ -6,8 +6,12 @@ const port = process.env.PORT || 3001;
 io.on("connection", socket => {
   console.log("User " + socket.id + " connected");
 
+  socket.on("newGame", data => {
+    socket.broadcast.emit("gameStarted", data);
+  });
+
   socket.on("disconnect", () => {
-    console.log("User " + socket.id + "disconnected");
+    console.log("User " + socket.id + " disconnected");
   });
 });
 
