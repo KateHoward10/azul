@@ -8,15 +8,15 @@
 
 <script>
 import { ref } from "vue"
-import io from "socket.io-client/dist/socket.io.js"
 import Coasters from "./components/Coasters.vue"
 import Queues from "./components/Queues.vue"
 import Grid from "./components/Grid.vue"
+import io from "socket.io-client"
 
 export default {
   name: 'App',
   setup() {
-    let socket = io("http://localhost:3000");
+    let socket = io("http://localhost:3001");
     const tiles = ref([]);
     const coasters = ref([]);
 
@@ -26,6 +26,10 @@ export default {
       tiles.value = shuffled;
       coasters.value = [shuffled.slice(0, 4), shuffled.slice(4, 8), shuffled.slice(8, 12), shuffled.slice(12, 16), shuffled.slice(16, 20)];
     }
+
+    socket.on("gameStarted", data => {
+      coasters.value = data;
+    })
 
     return { start, coasters }
   },
