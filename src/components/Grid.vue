@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
     <div
-      v-for="(tile, index) in tiles"
+      v-for="(tile, index) in pattern"
       :key="index"
       :class="tile"
       class="tile"
@@ -13,7 +13,7 @@
 export default {
   name: 'Grid',
   setup() {
-    const tiles = [
+    const pattern = [
       'blue', 'yellow', 'red', 'black', 'white',
       'white', 'blue', 'yellow', 'red', 'black',
       'black', 'white', 'blue', 'yellow', 'red',
@@ -21,7 +21,7 @@ export default {
       'yellow', 'red', 'black', 'white', 'blue'
     ];
 
-    return { tiles };
+    return { pattern };
   }
 }
 </script>
