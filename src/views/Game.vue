@@ -7,8 +7,7 @@
 </template>
 
 <script>
-import { reactive, toRefs } from "vue"
-import io from "socket.io-client"
+import { inject, reactive, toRefs } from "vue"
 import Coasters from "../components/Coasters.vue"
 import Queues from "../components/Queues.vue"
 import Grid from "../components/Grid.vue"
@@ -16,11 +15,11 @@ import Grid from "../components/Grid.vue"
 export default {
   name: 'Game',
   setup() {
-    let socket = io("http://localhost:3001");
     const state = reactive({
       tiles: [],
       coasters: []
     });
+    const socket = inject('socket');
 
     function start() {
       const colours = [...Array(20).fill('blue'), ...Array(20).fill('yellow'), ...Array(20).fill('red'), ...Array(20).fill('black'), ...Array(20).fill('white')];

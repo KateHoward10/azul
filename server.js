@@ -3,11 +3,25 @@ const http = require("http").createServer(server);
 const io = require("socket.io")(http);
 const port = process.env.PORT || 3001;
 
+let gameId;
+let games = {};
+let players = gameId ? games[gameId] : [];
+let name;
+
 io.on("connection", socket => {
   console.log("User " + socket.id + " connected");
 
   socket.on("newGame", data => {
-    socket.broadcast.emit("gameStarted", data);
+    socket.broadcast.to(gameId).emit("gameStarted", data);
+  });
+
+  socket.on('joinGame', (username, gameId) => {
+    if (!games[gameId]) players = [];
+    socket.join(gameId);
+    name = username;
+    players = [...players, username];
+    games[gameId] = players;
+    io.to(gameId).emit('updatePlayers', players);
   });
 
   socket.on("disconnect", () => {
