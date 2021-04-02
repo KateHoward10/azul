@@ -1,9 +1,9 @@
 <template>
   <div>
-    <label>Username <input required v-model="username" /></label>
+    <label>Username <input :value="username" @change="setUsername" /></label>
   </div>
   <div>
-    <label>Game ID <input required v-model="gameId" /></label>
+    <label>Game ID <input :value="gameId" @change="setGameId" /></label>
   </div>
   <button @click="startGame">Start new game</button>
   <p>OR</p>
@@ -11,35 +11,36 @@
 </template>
 
 <script>
-import { inject, reactive, toRefs } from "vue"
+import { computed, inject } from "vue"
+import { useStore } from "vuex"
 import { v4 as uuid } from "uuid"
 import router from '../router'
 
 export default {
   name: 'Home',
   setup() {
-    const state = reactive({
-      username: null,
-      gameId: null,
-      players: []
-    });
+    const store = useStore();
+    const username = computed(() => store.state.username);
+    const setUsername = (e) => store.commit('setUsername', e.target.value);
+    const gameId = computed(() => store.state.gameId);
+    const setGameId = (e) => store.commit('setGameId', e.target.value);
     const socket = inject('socket');
 
     function startGame() {
-      state.gameId = uuid();
+      store.commit('setGameId', uuid());
       joinGame();
     }
 
     function joinGame() {
-      socket.emit("joinGame", state.username, state.gameId);
-      router.push({ name: "Game", params: { id: state.gameId } });
+      socket.emit("joinGame", username.value, gameId.value);
+      router.push({ name: "Game", params: { id: gameId.value } });
     }
 
     socket.on("updatePlayers", newPlayers => {
-      state.players = newPlayers;
+      store.commit('setPlayers', newPlayers);
     });
 
-    return { ...toRefs(state), startGame, joinGame };
+    return { username, setUsername, gameId, setGameId, startGame, joinGame };
   }
 }
 </script>
