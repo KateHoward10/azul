@@ -14,20 +14,20 @@
 import { computed, inject } from "vue"
 import { useStore } from "vuex"
 import { v4 as uuid } from "uuid"
-import router from '../router'
+import router from "../router"
 
 export default {
-  name: 'Home',
+  name: "Home",
   setup() {
     const store = useStore();
     const username = computed(() => store.state.username);
-    const setUsername = (e) => store.commit('setUsername', e.target.value);
+    const setUsername = (e) => store.commit("setUsername", e.target.value);
     const gameId = computed(() => store.state.gameId);
-    const setGameId = (e) => store.commit('setGameId', e.target.value);
-    const socket = inject('socket');
+    const setGameId = (e) => store.commit("setGameId", e.target.value);
+    const socket = inject("socket");
 
     function startGame() {
-      store.commit('setGameId', uuid());
+      store.commit("setGameId", uuid());
       joinGame();
     }
 
@@ -35,10 +35,6 @@ export default {
       socket.emit("joinGame", username.value, gameId.value);
       router.push({ name: "Game", params: { id: gameId.value } });
     }
-
-    socket.on("updatePlayers", newPlayers => {
-      store.commit('setPlayers', newPlayers);
-    });
 
     return { username, setUsername, gameId, setGameId, startGame, joinGame };
   }

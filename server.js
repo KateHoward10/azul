@@ -15,13 +15,14 @@ io.on("connection", socket => {
     socket.broadcast.to(gameId).emit("gameStarted", data);
   });
 
-  socket.on('joinGame', (username, gameId) => {
+  socket.on("joinGame", (username, id) => {
+    gameId = id;
     if (!games[gameId]) players = [];
     socket.join(gameId);
     name = username;
     players = [...players, username];
     games[gameId] = players;
-    io.to(gameId).emit('updatePlayers', players);
+    io.to(gameId).emit("updatePlayers", players);
   });
 
   socket.on("disconnect", () => {

@@ -1,4 +1,5 @@
 <template>
+  <p>Players: {{ players.join(", ") }}</p>
   <button @click="start">Start</button>
   <Coasters :coasters="coasters" />
   <div class="board">
@@ -7,33 +8,38 @@
 </template>
 
 <script>
-import { inject, reactive, toRefs } from "vue"
+import { computed, inject } from "vue"
+import { useStore } from "vuex"
 import Coasters from "../components/Coasters.vue"
 import Queues from "../components/Queues.vue"
 import Grid from "../components/Grid.vue"
 
 export default {
-  name: 'Game',
+  name: "Game",
   setup() {
-    const state = reactive({
-      tiles: [],
-      coasters: []
-    });
-    const socket = inject('socket');
+    const store = useStore();
+    const players = computed(() => store.state.players);
+    const tiles = computed(() => store.state.tiles);
+    const coasters = computed(() => store.state.coasters);
+    const socket = inject("socket");
 
     function start() {
-      const colours = [...Array(20).fill('blue'), ...Array(20).fill('yellow'), ...Array(20).fill('red'), ...Array(20).fill('black'), ...Array(20).fill('white')];
+      const colours = [...Array(20).fill("blue"), ...Array(20).fill("yellow"), ...Array(20).fill("red"), ...Array(20).fill("black"), ...Array(20).fill("white")];
       const shuffled = colours.sort(() => Math.random() - 0.5);
-      state.tiles = shuffled;
-      state.coasters = [shuffled.slice(0, 4), shuffled.slice(4, 8), shuffled.slice(8, 12), shuffled.slice(12, 16), shuffled.slice(16, 20)];
-      socket.emit("newGame", state.coasters);
+      store.commit("setTiles", shuffled);
+      store.commit("setCoasters", [shuffled.slice(0, 4), shuffled.slice(4, 8), shuffled.slice(8, 12), shuffled.slice(12, 16), shuffled.slice(16, 20)]);
+      socket.emit("newGame", coasters.value);
     }
 
+    socket.on("updatePlayers", newPlayers => {
+      store.commit("setPlayers", newPlayers);
+    });
+
     socket.on("gameStarted", data => {
-      state.coasters = data;
+      store.commit("setCoasters", data);
     })
 
-    return { ...toRefs(state), start }
+    return { players, tiles, coasters, start }
   },
   components: { Coasters, Queues, Grid }
 }
