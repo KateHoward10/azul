@@ -9,11 +9,18 @@
         v-for="(tile, tileIndex) in coaster"
         :key="tileIndex"
         class="tile small"
-        :class="tile"
-        :class="{ pointer: myTurn }"
+        :class="[ tile, { pointer: myTurn }]"
         @click="() => selectTiles(index, tileIndex)"
       />
     </div>
+  </div>
+  <div class="container">
+    <div
+      v-for="(tile, index) in discarded"
+      :key="index"
+      class="tile small"
+      :class="tile"
+    />
   </div>
 </template>
 
@@ -22,6 +29,7 @@ export default {
   name: 'Coasters',
   props: {
     coasters: Array,
+    discarded: Array,
     myTurn: Boolean,
     selectTiles: Function
   }
@@ -50,6 +58,7 @@ export default {
   width: 40px;
   height: 40px;
   margin: 6px;
+  z-index: 10;
 }
 .pointer {
   cursor: pointer;

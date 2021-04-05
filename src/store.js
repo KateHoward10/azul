@@ -8,6 +8,7 @@ export default createStore({
     game: {
       tiles: [],
       coasters: [],
+      discarded: [],
       turn: null
     }
   },
@@ -21,8 +22,8 @@ export default createStore({
     setPlayers(state, newPlayers) {
       state.players = newPlayers
     },
-    setGame(state, game) {
-      state.game = game
+    setGame(state, data) {
+      state.game = { ...state.game, ...data }
     }
   }
 })

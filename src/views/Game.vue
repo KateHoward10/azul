@@ -5,7 +5,12 @@
     </span>
   </p>
   <button v-if="players[0] === username" @click="start">Start</button>
-  <Coasters :coasters="game.coasters" :myTurn="players[game.turn] === username" :selectTiles="selectTiles" />
+  <Coasters
+    :coasters="game.coasters"
+    :discarded="game.discarded"
+    :myTurn="players[game.turn] === username"
+    :selectTiles="selectTiles"
+  />
   <div class="board">
     <Queues /><Grid />
   </div>
@@ -34,7 +39,7 @@ export default {
       const data = {
         tiles: shuffled,
         coasters: [shuffled.slice(0, 4), shuffled.slice(4, 8), shuffled.slice(8, 12), shuffled.slice(12, 16), shuffled.slice(16, 20)],
-        turn: Math.random() * players.length | 0
+        turn: Math.random() * players.length | 0,
       };
       store.commit("setGame", data);
       socket.emit("updateGame", data);
@@ -47,7 +52,8 @@ export default {
       if (confirm(`Are you sure you‘d like to select ${number} ${toSelect[0]} tile${number > 1 ? "s" : ""} and discard the rest?`)) {
         selectedTiles.value = toSelect;
         const coasters = game.value.coasters.map((c, i) => i === index ? [] : c);
-        const data = { ...game.value, coasters };
+        const discarded = coaster.filter(tile => tile !== coaster[tileIndex]);
+        const data = { coasters, discarded };
         store.commit("setGame", data);
         socket.emit("updateGame", data);
       };
