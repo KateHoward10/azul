@@ -1,7 +1,11 @@
 <template>
-  <p>Players: {{ players.join(", ") }}</p>
-  <button @click="start">Start</button>
-  <Coasters :coasters="coasters" />
+  <p>
+    <span v-for="(player, index) in players" :key="index" class="name" :class="{ 'text-bold': players[game.turn] === player}">
+      {{ player }}
+    </span>
+  </p>
+  <button v-if="players[0] === username" @click="start">Start</button>
+  <Coasters :coasters="game.coasters" />
   <div class="board">
     <Queues /><Grid />
   </div>
@@ -18,28 +22,32 @@ export default {
   name: "Game",
   setup() {
     const store = useStore();
+    const username = computed(() => store.state.username);
     const players = computed(() => store.state.players);
-    const tiles = computed(() => store.state.tiles);
-    const coasters = computed(() => store.state.coasters);
+    const game = computed(() => store.state.game);
     const socket = inject("socket");
 
     function start() {
       const colours = [...Array(20).fill("blue"), ...Array(20).fill("yellow"), ...Array(20).fill("red"), ...Array(20).fill("black"), ...Array(20).fill("white")];
       const shuffled = colours.sort(() => Math.random() - 0.5);
-      store.commit("setTiles", shuffled);
-      store.commit("setCoasters", [shuffled.slice(0, 4), shuffled.slice(4, 8), shuffled.slice(8, 12), shuffled.slice(12, 16), shuffled.slice(16, 20)]);
-      socket.emit("newGame", coasters.value);
+      const data = {
+        tiles: shuffled,
+        coasters: [shuffled.slice(0, 4), shuffled.slice(4, 8), shuffled.slice(8, 12), shuffled.slice(12, 16), shuffled.slice(16, 20)],
+        turn: Math.random() * players.length | 0
+      };
+      store.commit("setGame", data);
+      socket.emit("updateGame", data);
     }
 
     socket.on("updatePlayers", newPlayers => {
       store.commit("setPlayers", newPlayers);
     });
 
-    socket.on("gameStarted", data => {
-      store.commit("setCoasters", data);
-    })
+    socket.on("gameUpdated", data => {
+      store.commit("setGame", data);
+    });
 
-    return { players, tiles, coasters, start }
+    return { username, players, game, start }
   },
   components: { Coasters, Queues, Grid }
 }
@@ -61,5 +69,11 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+.name {
+  margin: 0 5px;
+}
+.text-bold {
+  font-weight: bold;
 }
 </style>

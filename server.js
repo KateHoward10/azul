@@ -11,8 +11,8 @@ let name;
 io.on("connection", socket => {
   console.log("User " + socket.id + " connected");
 
-  socket.on("newGame", data => {
-    socket.broadcast.to(gameId).emit("gameStarted", data);
+  socket.on("updateGame", data => {
+    socket.broadcast.to(gameId).emit("gameUpdated", data);
   });
 
   socket.on("joinGame", (username, id) => {

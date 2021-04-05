@@ -5,8 +5,11 @@ export default createStore({
     username: null,
     gameId: null,
     players: [],
-    tiles: [],
-    coasters: []
+    game: {
+      tiles: [],
+      coasters: [],
+      turn: null
+    }
   },
   mutations: {
     setUsername(state, name) {
@@ -18,11 +21,8 @@ export default createStore({
     setPlayers(state, newPlayers) {
       state.players = newPlayers
     },
-    setTiles(state, tiles) {
-      state.tiles = tiles
-    },
-    setCoasters(state, coasters) {
-      state.coasters = coasters
+    setGame(state, game) {
+      state.game = game
     }
   }
 })
