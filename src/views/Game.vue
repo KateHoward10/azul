@@ -1,18 +1,18 @@
 <template>
   <p>
-    <span v-for="(player, index) in players" :key="index" class="name" :class="{ 'text-bold': players[game.turn] === player}">
+    <span v-for="(player, index) in players" :key="index" class="name" :class="{ 'text-bold': players[game.turn] === player }">
       {{ player }}
     </span>
   </p>
   <button v-if="players[0] === username" @click="start">Start</button>
-  <Coasters :coasters="game.coasters" />
+  <Coasters :coasters="game.coasters" :myTurn="players[game.turn] === username" :selectTiles="selectTiles" />
   <div class="board">
     <Queues /><Grid />
   </div>
 </template>
 
 <script>
-import { computed, inject } from "vue"
+import { computed, ref, inject } from "vue"
 import { useStore } from "vuex"
 import Coasters from "../components/Coasters.vue"
 import Queues from "../components/Queues.vue"
@@ -25,6 +25,7 @@ export default {
     const username = computed(() => store.state.username);
     const players = computed(() => store.state.players);
     const game = computed(() => store.state.game);
+    const selectedTiles = ref([]);
     const socket = inject("socket");
 
     function start() {
@@ -39,6 +40,19 @@ export default {
       socket.emit("updateGame", data);
     }
 
+    function selectTiles(index, tileIndex) {
+      const coaster = game.value.coasters[index];
+      const toSelect = coaster.filter(tile => tile === coaster[tileIndex]);
+      const number = toSelect.length;
+      if (confirm(`Are you sure you‘d like to select ${number} ${toSelect[0]} tile${number > 1 ? "s" : ""} and discard the rest?`)) {
+        selectedTiles.value = toSelect;
+        const coasters = game.value.coasters.map((c, i) => i === index ? [] : c);
+        const data = { ...game.value, coasters };
+        store.commit("setGame", data);
+        socket.emit("updateGame", data);
+      };
+    }
+
     socket.on("updatePlayers", newPlayers => {
       store.commit("setPlayers", newPlayers);
     });
@@ -47,7 +61,7 @@ export default {
       store.commit("setGame", data);
     });
 
-    return { username, players, game, start }
+    return { username, players, game, start, selectTiles }
   },
   components: { Coasters, Queues, Grid }
 }

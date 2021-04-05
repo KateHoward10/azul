@@ -5,7 +5,14 @@
       :key="index"
       class="coaster"
     >
-      <div v-for="(tile, index) in coaster" :key="index" class="tile small" :class="tile" />
+      <div
+        v-for="(tile, tileIndex) in coaster"
+        :key="tileIndex"
+        class="tile small"
+        :class="tile"
+        :class="{ pointer: myTurn }"
+        @click="() => selectTiles(index, tileIndex)"
+      />
     </div>
   </div>
 </template>
@@ -14,7 +21,9 @@
 export default {
   name: 'Coasters',
   props: {
-    coasters: Array
+    coasters: Array,
+    myTurn: Boolean,
+    selectTiles: Function
   }
 }
 </script>
@@ -41,5 +50,8 @@ export default {
   width: 40px;
   height: 40px;
   margin: 6px;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>
